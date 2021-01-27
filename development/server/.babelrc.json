@@ -1,0 +1,26 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "modules": "commonjs",
+                "useBuiltIns": "entry",
+                "targets": {
+                    "chrome": "58",
+                    "firefox": "54",
+                    "ie": "11",
+                    "safari": "10",
+                    "opera": "44",
+                    "edge": "16"
+                }
+            }
+        ]
+    ],
+    "plugins": [
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-arrow-functions",
+        "@babel/transform-runtime",
+        "@babel/plugin-transform-parameters"
+    ]
+}
