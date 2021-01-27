@@ -6,6 +6,7 @@ const HeroSchema = new Schema({
         type: String,
         trim: true,
         required: true,
+        unique: true,
         i18n: true
     },
     title_min: {

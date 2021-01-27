@@ -1,5 +1,6 @@
 const   db = require('../models')
 const Hero = db.hero
+const { getUserLang } = require('../middlewares/getUserLang')
 
 
 exports.addHero = (req, res) => {
@@ -32,18 +33,52 @@ exports.addHero = (req, res) => {
     })
 }
 
-exports.getHeroes = (req, res) => {
-    const getlang = req.get('Accept-Language')
-    let lang = getlang[0] + getlang[1]
-    Hero.find({}, `title.${lang} title_min.${lang} type.${lang} points`, (err, heroes) => {
+exports.changeHero = (req, res) => {
+    const title = req.param('title')
+    Hero.findOne({'title.en': title})
+    .exec((err, hero) => {
         if (err) {
-          res.sendStatus(500)
+            res.status(500).send({err})
         } else {
-          res.send({ heroes: heroes })
+            hero.save(err => {
+                if (err) return res.status(500).send({err})
+                res.status(200).send("Hero change successfully")
+            })
         }
-      }).sort({ title: 1 })
+    })
 }
 
-// /user/tobi for /user/:name
-// req.param('name')
-// => "tobi"
+exports.getHeroes = (req, res) => {
+    let lang = getUserLang(req, res)
+    Hero.find({}, `title.${lang} title_min.${lang} type.${lang} points`).sort({ title: 1 })
+    .exec((err, heroes) => {
+        if (err) {
+            res.status(500).send({err})
+        } else {
+            res.send({ heroes: heroes })
+        }
+    })
+}
+
+exports.getHero = (req, res) => {
+    const title = req.param('title')
+    Hero.findOne({'title.en': title})
+    .exec((err, hero) => {
+        if (err) {
+            res.status(500).send({err})
+        } else {
+            res.send({ hero: hero })
+        }
+    })
+}
+
+exports.deleteHero = (req, res) => {
+    const title = req.param('title')
+    Hero.remove({ 'title.en': title }, err => {
+        if (err) {
+            res.status(500).send({err})
+        } else {
+            res.status(200).send('Hero delete successfully')
+        }
+    })
+}
